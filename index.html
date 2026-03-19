@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>For Mahi 🌸</title>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600&family=Montserrat:wght@300;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root { --accent-pink: #ffb7c5; --krishna-blue: #4da3ff; --glow-gold: #ffd700; }
+        * { margin: 0; padding: 0; box-sizing: border-box; touch-action: none; } /* Disabled default touch to force swipe */
+        
+        body { font-family: 'Montserrat', sans-serif; height: 100vh; display: flex; justify-content: center; align-items: center; overflow: hidden; background: #000; }
+
+        /* --- BACKGROUND VIDEO --- */
+        #bg-video-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -2; background: #000; }
+        #bg-video-container video { width: 100%; height: 100%; object-fit: cover; filter: brightness(0.35) blur(1px); }
+
+        /* --- FLOATING PARTICLES --- */
+        #canvas-particles { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; pointer-events: none; }
+
+        /* --- CONTAINER --- */
+        .container { width: 95%; max-width: 850px; z-index: 10; padding: 10px; }
+        .para-card {
+            display: none; background: rgba(0, 0, 0, 0.3); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px);
+            padding: 2.5rem; border-radius: 40px; border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 25px 60px rgba(0,0,0,0.8); align-items: center; gap: 2rem; color: white;
+            transition: all 0.7s cubic-bezier(0.19, 1, 0.22, 1);
+        }
+
+        /* Card Transitions */
+        .fade-slide.active { display: flex; animation: fadeSlide 0.8s forwards; }
+        .zoom-in.active { display: flex; animation: zoomIn 0.8s forwards; }
+        .flip-card.active { display: flex; animation: flipCard 0.8s forwards; }
+        .bounce-in.active { display: flex; animation: bounceIn 0.8s forwards; }
+        .rotate-in.active { display: flex; animation: rotateIn 0.8s forwards; }
+
+        @keyframes fadeSlide { from { opacity: 0; transform: translateX(50px); } to { opacity: 1; transform: translateX(0); } }
+        @keyframes zoomIn { from { opacity: 0; transform: scale(0.85); } to { opacity: 1; transform: scale(1); } }
+        @keyframes flipCard { from { opacity: 0; transform: rotateX(90deg); } to { opacity: 1; transform: rotateX(0); } }
+        @keyframes bounceIn { from { opacity: 0; transform: translateY(80px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* --- MEDIA BOX --- */
+        .media-box { width: 260px; height: 260px; border-radius: 25px; overflow: hidden; border: 2px solid rgba(255,255,255,0.2); flex-shrink: 0; }
+        .media-box video, .media-box img { width: 100%; height: 100%; object-fit: cover; }
+
+        /* --- TEXT STYLING (Creative & Readable) --- */
+        .content { flex: 1; }
+        .headline { font-family: 'Dancing Script', cursive; font-size: 3.5rem; color: white; margin-bottom: 1rem; letter-spacing: 2px; }
+        
+        /* Fixed Blue Text Visibility */
+        .blue-glow { 
+            color: #74b9ff; 
+            text-shadow: 0 0 8px rgba(116, 185, 255, 0.6); 
+            font-weight: 600; 
+            display: inline-block;
+            animation: textFloat 3s infinite ease-in-out;
+        }
+        .highlight { 
+            color: var(--accent-pink); 
+            text-shadow: 0 0 10px rgba(255, 183, 197, 0.5); 
+            font-weight: 700; 
+        }
+
+        @keyframes textFloat { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-3px); } }
+
+        p { font-size: 1.25rem; line-height: 1.8; margin-bottom: 1.2rem; font-weight: 300; letter-spacing: 0.5px; }
+
+        /* --- ASLI SWIPE HANDLE --- */
+        .swipe-area { margin-top: 30px; display: flex; flex-direction: column; align-items: center; position: relative; }
+        .swipe-circle {
+            width: 60px; height: 60px; border: 2px solid rgba(255,255,255,0.3); border-radius: 50%;
+            display: flex; justify-content: center; align-items: center; position: relative;
+        }
+        .swipe-arrow {
+            font-size: 1.5rem; color: white; animation: arrowUp 1.5s infinite;
+        }
+        @keyframes arrowUp { 0% { transform: translateY(10px); opacity: 0; } 50% { opacity: 1; } 100% { transform: translateY(-15px); opacity: 0; } }
+        .swipe-label { font-size: 0.75rem; letter-spacing: 3px; color: rgba(255,255,255,0.6); margin-top: 15px; text-transform: uppercase; }
+
+        /* --- BUTTONS --- */
+        .next-btn {
+            border: none; padding: 14px 35px; border-radius: 50px; cursor: pointer;
+            font-size: 0.9rem; font-weight: 600; color: white; background: rgba(77, 163, 255, 0.3);
+            border: 1px solid var(--krishna-blue); transition: 0.4s; margin-top: 10px;
+        }
+        .next-btn:hover { background: var(--krishna-blue); transform: translateY(-3px); box-shadow: 0 10px 20px rgba(77, 163, 255, 0.4); }
+
+        footer { position: fixed; bottom: 15px; width: 100%; text-align: center; color: rgba(255,255,255,0.3); font-size: 0.8rem; }
+
+        @media (max-width: 768px) {
+            .para-card { flex-direction: column; text-align: center; padding: 2.5rem 1.5rem; width: 90%; margin: auto; }
+            .media-box { width: 220px; height: 220px; }
+            .headline { font-size: 2.8rem; }
+            p { font-size: 1.15rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="bg-video-container">
+        <video autoplay muted loop playsinline><source src="assets/bg-video.mp4" type="video/mp4"></video>
+    </div>
+
+    <canvas id="canvas-particles"></canvas>
+
+    <audio id="bgMusic" loop preload="auto"><source src="assets/musiz.m4a" type="audio/mp4"></audio>
+
+    <div class="container">
+        <section class="para-card active fade-slide" id="p1">
+            <div class="media-box"><video autoplay muted loop playsinline><source src="assets/para1.mp4" type="video/mp4"></video></div>
+            <div class="content">
+                <h1 class="headline">Hare Krishna <span class="highlight">Mahi</span> 🌸</h1>
+                <p>Ek min ruk… yo <span class="blue-glow">normal message</span> nai cha 😌</p>
+                <p>Specially ek aisi chhori khatir banayo cha… thodi si annoying, thodi si प्यारी… <span class="highlight">special pahadan</span> 💫</p>
+                
+                <div class="swipe-area">
+                    <div class="swipe-circle"><span class="swipe-arrow">↑</span></div>
+                    <div class="swipe-label">Scroll Up to Start</div>
+                </div>
+            </div>
+        </section>
+
+        <section class="para-card zoom-in" id="p2">
+            <div class="media-box"><video autoplay muted loop playsinline><source src="assets/para2.mp4" type="video/mp4"></video></div>
+            <div class="content">
+                <p>“Tujhe pata bhi cha tu kitni <span class="highlight">alag</span> cha?”</p>
+                <p>“Tero andaaz alag cha… tu bina try kare bhi sabko <span class="blue-glow">comfortable</span> feel karwa de cha.”</p>
+                <button class="next-btn" onclick="showNext(3)">Aur Suno 🕊️</button>
+            </div>
+        </section>
+
+        <section class="para-card flip-card" id="p3">
+            <div class="media-box"><video autoplay muted loop playsinline><source src="assets/para3.mp4" type="video/mp4"></video></div>
+            <div class="content">
+                <p>“Shayad yo sab <span class="blue-glow">Krishna ki kripa</span> cha 💙”</p>
+                <p>“Krishna hamesha teri <span class="highlight">raksha</span> karun, tero mann shant rakhan… aur tero muskaan kabhi kam na hon de.”</p>
+                <button class="next-btn" onclick="showNext(4)">Suno... ✨</button>
+            </div>
+        </section>
+
+        <section class="para-card bounce-in" id="p4">
+            <div class="media-box"><img src="assets/para4.jpeg"></div>
+            <div class="content">
+                <p>“Sach bolun? Tu bas ek normal insaan nai cha…”</p>
+                <p>“Tu wo cha jisko log <span class="blue-glow">yaad rakhan</span>. Kyunki tu dikhawa nai kar… tu <span class="highlight">asli</span> cha.”</p>
+                <button class="next-btn" onclick="showNext(5)">Ek Aur Baat ✨</button>
+            </div>
+        </section>
+
+        <section class="para-card rotate-in" id="p5">
+            <div class="media-box"><img src="assets/para5.jpeg"></div>
+            <div class="content">
+                <p>“Bas aisi hi rehna, <span class="highlight">Mahi</span>…”</p>
+                <p>“Duniya ma <span class="blue-glow">fake log</span> bahut cha… par tu alag cha 💫”</p>
+                <button class="next-btn" onclick="showNext(6)">Duaen 📚</button>
+            </div>
+        </section>
+
+        <section class="para-card zoom-in" id="p6">
+            <div class="media-box"><img src="assets/para6.jpeg"></div>
+            <div class="content">
+                <p>“Tension mat le… <span class="blue-glow">jitna padha hai na</span>, wahi kaafi hai.”</p>
+                <p>“May Krishna give you a <span class="highlight">peaceful mind</span>, sharp focus... Just give your best 😌”</p>
+                <p style="font-family:'Dancing Script'; font-size: 2.2rem; color:var(--accent-pink); text-align: right; margin-top: 10px;">- bhera</p>
+            </div>
+        </section>
+    </div>
+
+    <footer>All rights reserved by Lord Krishna (~bhera)</footer>
+
+    <script>
+        const canvas = document.getElementById('canvas-particles');
+        const ctx = canvas.getContext('2d');
+        const music = document.getElementById('bgMusic');
+        let parts = [];
+        const emoji = ['❤️', '🌸', '✨', '💙'];
+
+        function init() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            parts = [];
+            for(let i=0; i<45; i++) parts.push(new Part());
+        }
+
+        class Part {
+            constructor() { this.reset(); }
+            reset() {
+                this.x = Math.random() * canvas.width;
+                this.y = canvas.height + 50;
+                this.size = Math.random() * 20 + 15;
+                this.speed = Math.random() * 1.5 + 0.5;
+                this.text = emoji[Math.floor(Math.random() * emoji.length)];
+                this.opacity = Math.random() * 0.6 + 0.3;
+            }
+            draw() {
+                ctx.globalAlpha = this.opacity;
+                ctx.font = `${this.size}px serif`;
+                ctx.fillText(this.text, this.x, this.y);
+            }
+            update() {
+                this.y -= this.speed;
+                if(this.y < -50) this.reset();
+            }
+        }
+
+        function anim() {
+            ctx.clearRect(0,0,canvas.width, canvas.height);
+            parts.forEach(p => { p.update(); p.draw(); });
+            requestAnimationFrame(anim);
+        }
+
+        function startExp() {
+            music.play().catch(() => {});
+            showNext(2);
+        }
+
+        function showNext(id) {
+            const curr = document.querySelector('.para-card.active');
+            if(curr) {
+                curr.style.opacity = '0';
+                curr.style.transform = 'translateY(-30px) scale(0.9)';
+                setTimeout(() => {
+                    curr.classList.remove('active');
+                    const next = document.getElementById('p' + id);
+                    if(next) next.classList.add('active');
+                }, 500);
+            }
+        }
+
+        // --- ASLI SCROLL/SWIPE DETECTION ---
+        let startY = 0;
+        window.addEventListener('touchstart', e => { startY = e.touches[0].pageY; }, {passive: false});
+        window.addEventListener('touchend', e => {
+            let endY = e.changedTouches[0].pageY;
+            if (startY - endY > 80) { // Swipe Up detected
+                const p1 = document.getElementById('p1');
+                if(p1.classList.contains('active')) startExp();
+            }
+        }, {passive: false});
+
+        window.addEventListener('wheel', e => {
+            if (e.deltaY > 50) { // Scroll Down (which is Swipe Up)
+                const p1 = document.getElementById('p1');
+                if(p1.classList.contains('active')) startExp();
+            }
+        });
+
+        window.onload = () => { init(); anim(); };
+        window.onresize = init;
+    </script>
+</body>
+</html>
