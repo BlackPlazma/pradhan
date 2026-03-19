@@ -7,13 +7,22 @@
     <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600&family=Montserrat:wght@300;500;700&display=swap" rel="stylesheet">
     <style>
         :root { --accent-pink: #ffb7c5; --krishna-blue: #4da3ff; --glow-gold: #ffd700; }
-        * { margin: 0; padding: 0; box-sizing: border-box; touch-action: none; } /* Disabled default touch to force swipe */
+        * { margin: 0; padding: 0; box-sizing: border-box; touch-action: none; }
         
         body { font-family: 'Montserrat', sans-serif; height: 100vh; display: flex; justify-content: center; align-items: center; overflow: hidden; background: #000; }
 
-        /* --- BACKGROUND VIDEO --- */
+        /* --- DUAL BACKGROUND VIDEO SYSTEM --- */
         #bg-video-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -2; background: #000; }
         #bg-video-container video { width: 100%; height: 100%; object-fit: cover; filter: brightness(0.35) blur(1px); }
+
+        /* Hide desktop video on mobile, hide mobile video on desktop */
+        .pc-video { display: block; }
+        .mobile-video { display: none; }
+
+        @media (max-width: 768px) {
+            .pc-video { display: none; }
+            .mobile-video { display: block; }
+        }
 
         /* --- FLOATING PARTICLES --- */
         #canvas-particles { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; pointer-events: none; }
@@ -37,53 +46,29 @@
         @keyframes fadeSlide { from { opacity: 0; transform: translateX(50px); } to { opacity: 1; transform: translateX(0); } }
         @keyframes zoomIn { from { opacity: 0; transform: scale(0.85); } to { opacity: 1; transform: scale(1); } }
         @keyframes flipCard { from { opacity: 0; transform: rotateX(90deg); } to { opacity: 1; transform: rotateX(0); } }
-        @keyframes bounceIn { from { opacity: 0; transform: translateY(80px); } to { opacity: 1; transform: translateY(0); } }
 
         /* --- MEDIA BOX --- */
         .media-box { width: 260px; height: 260px; border-radius: 25px; overflow: hidden; border: 2px solid rgba(255,255,255,0.2); flex-shrink: 0; }
         .media-box video, .media-box img { width: 100%; height: 100%; object-fit: cover; }
 
-        /* --- TEXT STYLING (Creative & Readable) --- */
+        /* --- TEXT STYLING --- */
         .content { flex: 1; }
-        .headline { font-family: 'Dancing Script', cursive; font-size: 3.5rem; color: white; margin-bottom: 1rem; letter-spacing: 2px; }
-        
-        /* Fixed Blue Text Visibility */
-        .blue-glow { 
-            color: #74b9ff; 
-            text-shadow: 0 0 8px rgba(116, 185, 255, 0.6); 
-            font-weight: 600; 
-            display: inline-block;
-            animation: textFloat 3s infinite ease-in-out;
-        }
-        .highlight { 
-            color: var(--accent-pink); 
-            text-shadow: 0 0 10px rgba(255, 183, 197, 0.5); 
-            font-weight: 700; 
-        }
-
+        .headline { font-family: 'Dancing Script', cursive; font-size: 3.5rem; color: white; margin-bottom: 1rem; }
+        .blue-glow { color: #74b9ff; text-shadow: 0 0 8px rgba(116, 185, 255, 0.6); font-weight: 600; display: inline-block; animation: textFloat 3s infinite ease-in-out; }
+        .highlight { color: var(--accent-pink); text-shadow: 0 0 10px rgba(255, 183, 197, 0.5); font-weight: 700; }
         @keyframes textFloat { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-3px); } }
 
-        p { font-size: 1.25rem; line-height: 1.8; margin-bottom: 1.2rem; font-weight: 300; letter-spacing: 0.5px; }
+        p { font-size: 1.25rem; line-height: 1.8; margin-bottom: 1.2rem; font-weight: 300; }
 
-        /* --- ASLI SWIPE HANDLE --- */
-        .swipe-area { margin-top: 30px; display: flex; flex-direction: column; align-items: center; position: relative; }
-        .swipe-circle {
-            width: 60px; height: 60px; border: 2px solid rgba(255,255,255,0.3); border-radius: 50%;
-            display: flex; justify-content: center; align-items: center; position: relative;
-        }
-        .swipe-arrow {
-            font-size: 1.5rem; color: white; animation: arrowUp 1.5s infinite;
-        }
+        /* --- SWIPE AREA --- */
+        .swipe-area { margin-top: 30px; display: flex; flex-direction: column; align-items: center; position: relative; cursor: pointer; }
+        .swipe-circle { width: 60px; height: 60px; border: 2px solid rgba(255,255,255,0.3); border-radius: 50%; display: flex; justify-content: center; align-items: center; }
+        .swipe-arrow { font-size: 1.5rem; color: white; animation: arrowUp 1.5s infinite; }
         @keyframes arrowUp { 0% { transform: translateY(10px); opacity: 0; } 50% { opacity: 1; } 100% { transform: translateY(-15px); opacity: 0; } }
         .swipe-label { font-size: 0.75rem; letter-spacing: 3px; color: rgba(255,255,255,0.6); margin-top: 15px; text-transform: uppercase; }
 
-        /* --- BUTTONS --- */
-        .next-btn {
-            border: none; padding: 14px 35px; border-radius: 50px; cursor: pointer;
-            font-size: 0.9rem; font-weight: 600; color: white; background: rgba(77, 163, 255, 0.3);
-            border: 1px solid var(--krishna-blue); transition: 0.4s; margin-top: 10px;
-        }
-        .next-btn:hover { background: var(--krishna-blue); transform: translateY(-3px); box-shadow: 0 10px 20px rgba(77, 163, 255, 0.4); }
+        .next-btn { border: none; padding: 14px 35px; border-radius: 50px; cursor: pointer; font-size: 0.9rem; font-weight: 600; color: white; background: rgba(77, 163, 255, 0.3); border: 1px solid var(--krishna-blue); transition: 0.4s; }
+        .next-btn:hover { background: var(--krishna-blue); transform: translateY(-3px); }
 
         footer { position: fixed; bottom: 15px; width: 100%; text-align: center; color: rgba(255,255,255,0.3); font-size: 0.8rem; }
 
@@ -98,7 +83,12 @@
 <body>
 
     <div id="bg-video-container">
-        <video autoplay muted loop playsinline><source src="assets/bg-video.mp4" type="video/mp4"></video>
+        <video class="pc-video" autoplay muted loop playsinline>
+            <source src="assets/bg-video.mp4" type="video/mp4">
+        </video>
+        <video class="mobile-video" autoplay muted loop playsinline>
+            <source src="assets/bg-video2.mp4" type="video/mp4">
+        </video>
     </div>
 
     <canvas id="canvas-particles"></canvas>
@@ -113,7 +103,7 @@
                 <p>Ek min ruk… yo <span class="blue-glow">normal message</span> nai cha 😌</p>
                 <p>Specially ek aisi chhori khatir banayo cha… thodi si annoying, thodi si प्यारी… <span class="highlight">special pahadan</span> 💫</p>
                 
-                <div class="swipe-area">
+                <div class="swipe-area" onclick="startExp()">
                     <div class="swipe-circle"><span class="swipe-arrow">↑</span></div>
                     <div class="swipe-label">Scroll Up to Start</div>
                 </div>
@@ -161,12 +151,12 @@
             <div class="content">
                 <p>“Tension mat le… <span class="blue-glow">jitna padha hai na</span>, wahi kaafi hai.”</p>
                 <p>“May Krishna give you a <span class="highlight">peaceful mind</span>, sharp focus... Just give your best 😌”</p>
-                <p style="font-family:'Dancing Script'; font-size: 2.2rem; color:var(--accent-pink); text-align: right; margin-top: 10px;">- bhera</p>
+                <p style="font-family:'Dancing Script'; font-size: 2.2rem; color:var(--accent-pink); text-align: right; margin-top: 10px;">- SHUBH</p>
             </div>
         </section>
     </div>
 
-    <footer>All rights reserved by Lord Krishna (~bhera)</footer>
+    <footer>All rights reserved by Lord Krishna (~SHUBH)</footer>
 
     <script>
         const canvas = document.getElementById('canvas-particles');
@@ -227,19 +217,18 @@
             }
         }
 
-        // --- ASLI SCROLL/SWIPE DETECTION ---
         let startY = 0;
         window.addEventListener('touchstart', e => { startY = e.touches[0].pageY; }, {passive: false});
         window.addEventListener('touchend', e => {
             let endY = e.changedTouches[0].pageY;
-            if (startY - endY > 80) { // Swipe Up detected
+            if (startY - endY > 80) {
                 const p1 = document.getElementById('p1');
                 if(p1.classList.contains('active')) startExp();
             }
         }, {passive: false});
 
         window.addEventListener('wheel', e => {
-            if (e.deltaY > 50) { // Scroll Down (which is Swipe Up)
+            if (e.deltaY > 50) {
                 const p1 = document.getElementById('p1');
                 if(p1.classList.contains('active')) startExp();
             }
